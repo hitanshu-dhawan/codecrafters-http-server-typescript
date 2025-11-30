@@ -39,7 +39,15 @@ const server = net.createServer((socket) => {
         // Handle /echo/{str} endpoint
         else if (urlPath.startsWith("/echo/")) {
             const str = urlPath.slice(6);
-            socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${str.length}\r\n\r\n${str}`);
+            const lines = request.split("\r\n");
+            const acceptEncodingLine = lines.find(line => line.toLowerCase().startsWith("accept-encoding:"));
+            const acceptEncoding = acceptEncodingLine ? acceptEncodingLine.substring(acceptEncodingLine.indexOf(":") + 1).trim() : "";
+
+            if (acceptEncoding.split(",").map(s => s.trim()).includes("gzip")) {
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: ${str.length}\r\n\r\n${str}`);
+            } else {
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${str.length}\r\n\r\n${str}`);
+            }
         }
         // Handle /user-agent endpoint
         else if (urlPath === "/user-agent") {
