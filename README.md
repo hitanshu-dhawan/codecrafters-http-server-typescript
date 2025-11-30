@@ -1,37 +1,48 @@
-[![progress-banner](https://backend.codecrafters.io/progress/http-server/627faaa8-d033-4ca3-95e0-afb76ad3d47d)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# HTTP Server in TypeScript
 
-This is a starting point for TypeScript solutions to the
-["Build Your Own HTTP server" Challenge](https://app.codecrafters.io/courses/http-server/overview).
+This project is a simple HTTP server built from scratch in TypeScript, as part of the CodeCrafters "Build your own HTTP server" challenge.
 
-[HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) is the
-protocol that powers the web. In this challenge, you'll build a HTTP/1.1 server
-that is capable of serving multiple clients.
+## Features
 
-Along the way you'll learn about TCP servers,
-[HTTP request syntax](https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html),
-and more.
+The server supports the following features:
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+- **Concurrent Connections**: Can handle multiple clients connecting at the same time.
+- **Endpoint Routing**:
+    - `GET /`: Responds with a 200 OK status.
+    - `GET /echo/{str}`: Echoes back the given string. Supports `gzip` compression.
+    - `GET /user-agent`: Responds with the client's User-Agent.
+    - `GET /files/{filename}`: Serves a file from a specified directory.
+    - `POST /files/{filename}`: Creates a file in a specified directory with the request body content.
+- **Command-line Arguments**: Accepts a `--directory <directory_path>` argument to specify the directory for file operations.
 
-# Passing the first stage
+## How to Run
 
-The entry point for your HTTP server implementation is in `app/main.ts`. Study
-and uncomment the relevant code, and push your changes to pass the first stage:
+1.  **Prerequisites**:
+    - [Bun](https://bun.sh/) installed on your machine.
+    - Node.js and npm (for installing dependencies if you don't use Bun).
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
+2.  **Installation**:
+
+    ```bash
+    bun install
+    ```
+
+3.  **Running the server**:
+
+    ```bash
+    ./your_program.sh --directory /path/to/your/files
+    ```
+
+    Replace `/path/to/your/files` with the actual path to the directory you want the server to use for file operations.
+
+## Project Structure
+
 ```
-
-Time to move on to the next stage!
-
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `bun (1.2)` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `app/main.ts`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+.
+├── app
+│   └── main.ts         # The main entry point of the application
+├── your_program.sh     # Script to run the server locally
+├── package.json        # Project metadata and dependencies
+├── tsconfig.json       # TypeScript compiler options
+└── bun.lockb           # Bun lockfile
+```
