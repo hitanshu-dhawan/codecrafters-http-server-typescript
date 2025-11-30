@@ -25,8 +25,11 @@ const server = net.createServer((socket) => {
         const request = data.toString();
         console.log("Received request:", request);
 
-        // Extract the URL path from the request line
-        const urlPath = request.split("\r\n")[0].split(" ")[1];
+        // Extract the method and URL path from the request line
+        const requestLine = request.split("\r\n")[0];
+        const method = requestLine.split(" ")[0];
+        const urlPath = requestLine.split(" ")[1];
+        console.log("Method:", method);
         console.log("Path:", urlPath);
 
         // Handle root path
@@ -50,12 +53,18 @@ const server = net.createServer((socket) => {
             const filename = urlPath.slice(7);
             const filePath = path.join(directory, filename);
 
-            if (fs.existsSync(filePath)) {
-                const content = fs.readFileSync(filePath);
-                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\r\n`);
-                socket.write(content);
-            } else {
-                socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
+            if (method === "GET") {
+                if (fs.existsSync(filePath)) {
+                    const content = fs.readFileSync(filePath);
+                    socket.write(`HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\r\n`);
+                    socket.write(content);
+                } else {
+                    socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
+                }
+            } else if (method === "POST") {
+                const body = request.split("\r\n\r\n")[1];
+                fs.writeFileSync(filePath, body);
+                socket.write("HTTP/1.1 201 Created\r\n\r\n");
             }
         }
         // Handle 404 Not Found
